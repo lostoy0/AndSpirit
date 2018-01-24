@@ -7,6 +7,8 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.dragon.android.spirit.eventbus.LocationMessage;
+import com.dragon.android.spirit.eventbus.SpriteEventBus;
 
 /**
  * Created by raymondlee on 2018/1/14.
@@ -45,6 +47,10 @@ public class LocationManager {
         mLocationClient.start();
     }
 
+    public void requestLocation(Context context) {
+        init(context);
+    }
+
     public class SpiritLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location){
@@ -69,7 +75,21 @@ public class LocationManager {
             //获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
             int errorCode = location.getLocType();
 
-            Log.i("raymond", "location info:" + location.toString());
+            String logString = "[address: " + location.getAddrStr() + "\n\r"
+                    + "country: " + location.getCountry() + "\n\r"
+                    + "province: " + location.getProvince() + "\n\r"
+                    + "city: " + location.getCity() + "\n\r"
+                    + "district: " + location.getDistrict() + "\n\r"
+                    + "street: " + location.getStreet() + "\n\r"
+                    + "latitude: " + location.getLatitude() + "\n\r"
+                    + "longitude: " + location.getLongitude() + "\n\r"
+                    + "radius: " + location.getRadius() + "\n\r"
+                    + "coorType: " + location.getCoorType() + "\n\r"
+                    + "errorCode: " + location.getLocType() + "]";
+
+            SpriteEventBus.post(new LocationMessage(logString));
+
+            Log.i("raymond", logString);
         }
     }
 }

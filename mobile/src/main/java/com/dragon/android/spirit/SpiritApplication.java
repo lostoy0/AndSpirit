@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.dragon.android.spirit.location.LocationManager;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 /**
  * Created by raymondlee on 2018/1/14.
  */
@@ -13,7 +15,7 @@ public class SpiritApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        initBaiduMapSDK();
+//        initBaiduMapSDK();
     }
 
     private void initBaiduMapSDK() {
