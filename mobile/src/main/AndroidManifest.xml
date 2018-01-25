@@ -32,7 +32,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="ESHaOD3sTarsFcy62ZuU6rCGWWt5Wwjr"></meta-data>
+            android:value="ESHaOD3sTarsFcy62ZuU6rCGWWt5Wwjr"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -45,7 +45,11 @@
         <service android:name=".service.SpiritService" />
         <service android:name=".phone.PhoneDogService" />
 
-        <receiver android:name=".broadcast.SpiritReceiver" />
+        <receiver android:name=".broadcast.SpiritReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
         <receiver android:name=".phone.PhoneReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
