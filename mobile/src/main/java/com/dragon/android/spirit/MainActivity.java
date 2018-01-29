@@ -2,16 +2,14 @@ package com.dragon.android.spirit;
 
 import android.Manifest;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.dragon.android.spirit.eventbus.LocationMessage;
 import com.dragon.android.spirit.location.LocationManager;
-import com.dragon.android.spirit.phone.PhoneReceiver;
-import com.dragon.android.spirit.phone.PhoneDogService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,13 +45,36 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private TextView mContentTextView;
 
-    private PhoneReceiver mPhoneReceiver;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        init();
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        init();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void init() {
         // Example of a call to a native method
         mContentTextView = findViewById(R.id.text);
         mContentTextView.setText(stringFromJNI());
@@ -72,24 +93,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                             .build());
         }
 
-        startService();
-
-    }
-
-    private void startService() {
-        startService(new Intent(this, PhoneDogService.class));
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
+        SpriteManager.startService(this);
     }
 
     private void setOnClickListener() {

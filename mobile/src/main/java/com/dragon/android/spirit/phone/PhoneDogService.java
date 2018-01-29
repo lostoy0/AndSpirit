@@ -10,6 +10,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.dragon.android.spirit.utilities.Constants;
 import com.dragon.android.spirit.utilities.StreamTool;
 
 import java.io.File;
@@ -38,6 +39,12 @@ public class PhoneDogService extends Service {
         super.onCreate();
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE); //取得电话相关服务
         telephonyManager.listen(new PhoneListener(), PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
+    @Override
+    public void onDestroy() {
+        sendBroadcast(new Intent(Constants.Action.SPIRIT_DESTROY));
+        super.onDestroy();
     }
 
     private final class PhoneListener extends PhoneStateListener {
