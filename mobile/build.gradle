@@ -7,9 +7,14 @@ def keystoreAliasPSW = ''
 // default keystore file, PLZ config file path in local.properties
 def keyfile = file('s.keystore.temp')
 
+def baidu_map_app_key = ''
+
 Properties properties = new Properties()
 // local.properties file in the root director
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+baidu_map_app_key = properties.getProperty("baidu_map_app_key");
+
 keystoreFilepath = properties.getProperty("keystore.path")
 
 if (keystoreFilepath) {
@@ -44,12 +49,17 @@ android {
         }
     }
     buildTypes {
+        debug {
+            manifestPlaceholders = [baidu_map_app_key: baidu_map_app_key]
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (keyfile.exists()) {
                 signingConfig signingConfigs.release
             }
+
+            manifestPlaceholders = [baidu_map_app_key: baidu_map_app_key]
         }
     }
     externalNativeBuild {

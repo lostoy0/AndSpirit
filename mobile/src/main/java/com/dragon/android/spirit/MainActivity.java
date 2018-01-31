@@ -1,6 +1,5 @@
 package com.dragon.android.spirit;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +20,8 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
 
+import static com.dragon.android.spirit.utilities.Constants.PERMISSIONS;
+
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     // Used to load the 'native-lib' library on application startup.
@@ -30,36 +31,19 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private static final int REQUEST_CODE_PERMISSION = 1000;
 
-    private final String[] mPermissions = {
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_WIFI_STATE,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.CHANGE_WIFI_STATE,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.INTERNET,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-            Manifest.permission.RECORD_AUDIO
-    };
-
     private TextView mContentTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         init();
-
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
         init();
-
     }
 
     @Override
@@ -81,25 +65,26 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
         setOnClickListener();
 
-        if(EasyPermissions.hasPermissions(this, mPermissions)) {
+        SpiritManager.startCoreService(this);
+
+        if(EasyPermissions.hasPermissions(this, PERMISSIONS)) {
             LocationManager.getInstance().init(this);
         } else {
             EasyPermissions.requestPermissions(
-                    new PermissionRequest.Builder(this, REQUEST_CODE_PERMISSION, mPermissions)
+                    new PermissionRequest.Builder(this, REQUEST_CODE_PERMISSION, PERMISSIONS)
 //                            .setRationale(R.string.camera_and_location_rationale)
 //                            .setPositiveButtonText(R.string.rationale_ask_ok)
 //                            .setNegativeButtonText(R.string.rationale_ask_cancel)
 //                            .setTheme(R.style.my_fancy_style)
                             .build());
         }
-
-        SpriteManager.startService(this);
     }
 
     private void setOnClickListener() {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mContentTextView.setText("");
                 LocationManager.getInstance().requestLocation(MainActivity.this);
             }
         });
@@ -117,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
             // Do something after user returned from app settings screen, like showing a Toast.
-            if(EasyPermissions.hasPermissions(this, mPermissions)) {
+            if(EasyPermissions.hasPermissions(this, PERMISSIONS)) {
                 LocationManager.getInstance().init(this);
             }
         }

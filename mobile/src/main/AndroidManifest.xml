@@ -21,20 +21,23 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <!-- 音频刻录权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".SpiritApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="ESHaOD3sTarsFcy62ZuU6rCGWWt5Wwjr"/>
+            android:value="${baidu_map_app_key}"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,17 +45,31 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.SpiritService" />
-        <service android:name=".phone.PhoneDogService" />
-
         <receiver android:name=".broadcast.SpiritReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
-                <action android:name="com.dragon.android.spirit.destroy" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".service.SpiritLocalService"
+            android:exported="true" />
+        <service
+            android:name=".service.SpiritLocalService$InnnerService"
+            android:exported="true" />
+
+        <service
+            android:name=".service.SpiritRemoteService"
+            android:exported="true"
+            android:process=":remote" />
+        <service
+            android:name=".service.SpiritRemoteService$InnnerService"
+            android:exported="true"
+            android:process=":remote" />
+
+        <service
+            android:name=".service.SpiritJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
             android:name="com.baidu.location.f"
